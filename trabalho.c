@@ -1,3 +1,8 @@
+/*
+ * Autores: Vitor Arins Pinto    -    12205530
+ *          Joao Paulo Duarte Lucio - 09238023
+ */
+
 #include	<pthread.h>
 #include	<stdlib.h>
 #include	<stdio.h>
