@@ -4,6 +4,8 @@
 #include	<string.h>
 #include	<math.h>
 
+pthread_mutex_t mutex;
+
 int *vectorA;
 int *vectorB;
 
@@ -32,8 +34,14 @@ void *ProdutoEscalar(void *arg){
   
   printf ("Thread %d calculou de %d a %d: produto escalar parcial = %d\n",threadParams->n_thread,threadParams->start,end_index,local_sum);
 
+  // trava o mutex para a regiao critica
+  pthread_mutex_lock(&mutex);
+  
   // adiciona a soma local na variavel global de soma
   sum = sum + local_sum;
+
+  // destrava o mutex apos regiao critica
+  pthread_mutex_unlock(&mutex);
   
   pthread_exit(NULL);
 }
@@ -106,6 +114,9 @@ int main (int argc,char	**argv)	{
   // contador para indicar o indice inicial de cada thread
   int thread_size_counter = 0;
 
+  // inicializa variavel mutex
+  pthread_mutex_init(&mutex,NULL);
+  
   // itera ate o numero de threads
   for(int i=0;i<NTHREADS;i++) {
 
@@ -129,6 +140,9 @@ int main (int argc,char	**argv)	{
   for(int i=0;i<NTHREADS;i++) {
     pthread_join(thread[i],NULL);
   }
+
+  // destroi a variavel mutex
+  pthread_mutex_destroy(&mutex);
   
   printf("\n");
   
